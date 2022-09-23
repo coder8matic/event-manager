@@ -1,26 +1,36 @@
-from flask import Flask  # , render_template
+from flask import Flask
 # load environmental variables from .env file
 from dotenv import load_dotenv
 # Environment variables need to be imported before modules import
 load_dotenv()
 
-
 from handlers.auth import authentication_handlers  # noqa E402
-from handlers.dashboard import dashboard_handlers  # noqa E402
+from handlers.event import event_handlers  # noqa E402
 from models.settings import db  # noqa E402
 from models.user import User  # noqa E402
-# from models.event import Event
-# from models.event_item import EventItem
-# from models.event_item_user import EventItemUser
-# from models.invitation_list import InvitationList
-# from models.invitation_list_item import InvitationListItem
+from models.event import Event  # noqa E402
+from models.event_item import EventItem  # noqa E402
+from models.event_item_user import EventItemUser  # noqa E402
+from models.invitation_list import InvitationList  # noqa E402
+from models.invitation_list_item import InvitationListItem  # noqa E402
 from utils.user_helper import isLoggedIn, redirectToRoute, getCurrentUser  # noqa E402
 # from utils.app_name import app_name  # noqa E402
+
 
 # Check if everything is OK with DB. If DB do not exist create DB
 try:
     db.query(User).first()
     print("Table 'User' is OK")
+    db.query(Event).first()
+    print("Table 'Event' is OK")
+    db.query(EventItem).first()
+    print("Table 'EventItem' is OK")
+    db.query(EventItemUser).first()
+    print("Table 'EventItemUser' is OK")
+    db.query(InvitationList).first()
+    print("Table 'InvitationList' is OK")
+    db.query(InvitationListItem).first()
+    print("Table 'InvitationListItem' is OK")
 
 except:   # noqa E722
     try:
@@ -32,13 +42,13 @@ except:   # noqa E722
 
 app = Flask(__name__)
 app.register_blueprint(authentication_handlers)
-app.register_blueprint(dashboard_handlers)
+app.register_blueprint(event_handlers)
 print('up and running')
 
 
 @app.route('/', methods=["GET"])
 def index():
-    return redirectToRoute("dashboard.dashboard") \
+    return redirectToRoute("event_handlers.events_list") \
         if isLoggedIn() else redirectToRoute("auth.login")
 
 

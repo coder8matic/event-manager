@@ -1,0 +1,74 @@
+{% extends "layouts/loggedin.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-body bg-light">
+        <div class="card-title">
+            Add new Event
+        </div>
+        <div class="card-text">
+            {% if action == 'create' %}
+            <form action="{{ url_for('event_handlers.event', action='create') }}" method="POST">
+            {% elif action == 'update' %}
+            <form action="{{ url_for('event_handlers.event', action='update', event_id=event.id) }}" method="POST">
+            {% else %}
+
+            {% endif %}
+                <div class="col-auto">
+                    <label for="event_name" class="form-label">Event Name</label>
+                    <input type="text" class="form-control" id="event_name" name="event_name" value="{{ event.event_name }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_invitation_text" class="form-label">Invitation text</label>
+                    <textarea rows="8" class="form-control" id="event_invitation_text" name="event_invitation_text" required>{{ event.event_invitation_text }}</textarea>
+                </div>
+                <div class="col-auto">
+                    <label for="invitation_list_id" class="form-label">Invitation List ID</label>
+                    <input type="text" class="form-control" id="invitation_list_id" name="invitation_list_id" value="{{ event.invitation_list_id }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_start_date" class="form-label">Start date</label>
+                    <input type="date" class="form-control" id="event_start_date" name="event_start_date" value="{{ event.event_start_date }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_end_date" class="form-label">End date</label>
+                    <input type="date" class="form-control" id="event_end_date" name="event_end_date" value="{{ event.event_end_date }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_time_start" class="form-label">Event time</label>
+                    <input type="time" class="form-control" id="event_time_start" name="event_time_start" value="{{ event.event_time_start }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_duration_minutes" class="form-label">Event duration (in minutes)</label>
+                    <input type="number" min=0 class="form-control" id="event_duration_minutes" name="event_duration_minutes" value="{{ event.event_duration_minutes }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_recurrence_period" class="form-label">Enter crontab code for recurrence period</label>
+                    <input type="text" class="form-control" id="event_recurrence_period" name="event_recurrence_period" value="{{ event.event_recurrence_period }}" required>
+                    <a href="https://crontab-generator.org">Crontab generator</a>
+                </div>
+                <div class="col-auto">
+                    <label for="send_event_invite_before_days" class="form-label">Send Invitation before event (days)</label>
+                    <input type="number" min=0 class="form-control" id="send_event_invite_before_days" name="send_event_invite_before_days" value="{{ event.send_event_invite_before_days }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="send_event_invite_at_hour" class="form-label">Hour when invitation is send</label>
+                    <input type="number" min=0 max=24 class="form-control" id="send_event_invite_at_hour" name="send_event_invite_at_hour" value="{{ event.send_event_invite_at_hour }}" required>
+                </div>
+                <div class="col-auto">
+                    <label for="event_remind_before_hours" class="form-label">Send reminder before event (hours)</label>
+                    <input type="number" class="form-control" id="event_remind_before_hours" name="event_remind_before_hours" value="{{ event.event_remind_before_hours }}" required>
+                </div>
+                <div class="col-auto mt-2">
+                    {% if action == 'create' %}
+                    <button type="submit" class="btn btn-success">Create</button>
+                    {% elif action == 'update' %}
+                    <button type="submit" class="btn btn-success">Update</button>
+                    {% else %}
+
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

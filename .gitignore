@@ -164,3 +164,5 @@ plan
 test.py
 plan.md
 event_manager.sqlite
+.trunk
+src/event_manager.sqlite

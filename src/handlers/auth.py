@@ -33,7 +33,7 @@ def login():
                     'password': tryUser.password
                 }))
 
-                response = make_response(redirect(url_for("dashboard.dashboard")))  # noqa E501  
+                response = make_response(redirect(url_for("index")))  # noqa E501  
                 response.set_cookie("session_token", session_token,
                                     httponly=True,
                                     samesite='Strict'
@@ -53,6 +53,7 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
         tryUser = db.query(User).filter_by(email=email).first()
+        print(tryUser)
         if not tryUser:
             newUser = User(email=email,
                            password=hashlib.sha256(password.encode())
@@ -72,7 +73,7 @@ def logout():
         session_token = request.cookies.get("session_token")
         r.delete(session_token)
 
-        response = make_response(redirect(url_for("dashboard.dashboard")))
+        response = make_response(redirect(url_for("index")))
         response.set_cookie("session_token", session_token,
                             httponly=True, samesite='Strict', max_age=0)
         return response
