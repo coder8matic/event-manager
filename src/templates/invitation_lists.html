@@ -1,4 +1,52 @@
 {% extends "layouts/loggedin.html" %}
 {% block content %}
-<h6>Logged in invitation lists</h6>
+<div class="card">
+    <div class="card-body bg-light">
+        <div class="card-title">
+            <div class="row">
+                <div class="col">My Invitation Lists</div>
+                <div class="col d-grid gap-2 d-md-flex justify-content-md-end me-2"><a class="btn btn-primary" href="{{ url_for('invitation_list_handlers.invitation_list', action='create') }}">+</a></div>
+            </div>
+        </div>
+        <div class="card-text">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>List Name</td>
+                        <td>Owner ID</td>
+                        <td>Owner Name</td>
+                        <td>Last change</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for inv_list in inv_lists %}
+                <tr>
+                    <td>{{ inv_list.id }}</td>
+                    <td>{{ inv_list.list_name }}</td>
+                    <td>{{ inv_list.list_owner_id }}</td>
+                    <td>{{ inv_list.list_owner.email }}</td>
+                    {% if inv_list.updated_at is not none %}
+                    <td>{{ inv_list.updated_at }}</td>
+                    {% else %}
+                    <td>{{ inv_list.created_at }}</td>
+                    {% endif %}
+                    <td>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <div class="col-auto mt-2">
+                            <a href="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='update') }}" class="btn btn-outline-primary">Edit</a>
+                            </div>
+                            <div class="col-auto mt-2">
+                                <form action="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='delete') }}" method="post">
+                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>            
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

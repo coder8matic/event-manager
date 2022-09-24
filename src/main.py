@@ -6,6 +6,7 @@ load_dotenv()
 
 from handlers.auth import authentication_handlers  # noqa E402
 from handlers.event import event_handlers  # noqa E402
+from handlers.invitation_list import invitation_list_handlers  # noqa E402
 from models.settings import db  # noqa E402
 from models.user import User  # noqa E402
 from models.event import Event  # noqa E402
@@ -43,6 +44,7 @@ except:   # noqa E722
 app = Flask(__name__)
 app.register_blueprint(authentication_handlers)
 app.register_blueprint(event_handlers)
+app.register_blueprint(invitation_list_handlers)
 print('up and running')
 
 

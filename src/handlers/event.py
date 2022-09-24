@@ -1,11 +1,9 @@
 from flask import Blueprint, render_template, request
 from models.event import Event
-# from models.post import Post
 from models.settings import db
 from utils.app_name import app_name
 from utils.user_helper import (getCurrentUser, isLoggedIn,
                                redirectToLogin, redirectToRoute)
-#  from utils.mail import sendEmail
 
 event_handlers = Blueprint("event_handlers", __name__)
 

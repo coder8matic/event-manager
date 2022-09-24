@@ -20,6 +20,9 @@
                     <li class="nav-item">
                         <a class="nav-link " aria-current="page" href="{{ url_for('event_handlers.events_list') }}">My Events</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="{{ url_for('invitation_list_handlers.invitation_lists') }}">My Invitation Lists</a>
+                    </li>
                 </ul>
                 <div class="my-auto"> User: <strong>{{ user.email }}</strong></div> 
                 <form class="my-auto ms-2 me-2" action="{{ url_for('auth.logout') }}" method="POST">
