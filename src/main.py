@@ -32,7 +32,7 @@ try:
     db.query(InvitationList).first()
     print("Table 'InvitationList' is OK")
     db.query(InvitationListMember).first()
-    print("Table 'InvitationListItem' is OK")
+    print("Table 'InvitationListMember' is OK")
 
 except:   # noqa E722
     try:

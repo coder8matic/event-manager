@@ -19,9 +19,9 @@
                                 <h5 class="modal-title" id="updateCommentModalLabel">Please insert email of a new List Member.</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="{{ url_for('inv_list_member_handlers.invitation_list_member', inv_list_id=InvList.id, action='create') }}" method="POST">
+                            <form action="{{ url_for('inv_list_member_handlers.invitation_list_member', inv_list_id=InvList.id, inv_list_member_email=new_member_email) }}" method="POST">
                                 <div class="modal-body">
-                                    <input type="email" class="form-control" id="new_inv_list_member_email" name="new_inv_list_member_email" value="{{ new_inv_list_member_email }}" required>
+                                    <input type="email" class="form-control" id="new_member_email" name="new_member_email" value="{{ new_member_email }}" required>
                                 </div>
                                 <div class="modal-footer">
                                     <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
@@ -40,28 +40,30 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>InvListMember ID</td>
                         <td>member ID</td>
                         <td>e-mail</td>
-                        <td>Last change at</td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
-                {% for InvListMember in InvListMembers %}
+                {% for InvListsMember in InvListsMembers %}
                 <tr>
-                    <td>{{ InvListMember.id }}</td>
-                    <td>{{ InvListMember.list_member_id }}</td>
-                    <td>{{ InvListMember.list_member.email }}</td>
-                    {% if InvListMember.updated_at is not none %}
-                    <td>{{ InvListMember.updated_at }}</td>
+                    <td>{{ InvListsMember.user_id }}</td>
+                    <td>{{ InvListsMember.user_email }}</td>
+                    {% if InvListsMember.updated_at is not none %}
+                    <td>{{ InvListsMember.updated_at }}</td>
                     {% else %}
-                    <td>{{ InvListMember.created_at }}</td>
+                    <td>{{ InvListsMember.created_at }}</td>
                     {% endif %}
                     <td>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <div class="col-auto mt-2">
+                            <a href="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='update') }}" class="btn btn-outline-primary">Edit</a>
                             </div>
                             <div class="col-auto mt-2">
+                                <form action="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='delete') }}" method="post">
+                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </td>

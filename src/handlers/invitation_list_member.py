@@ -25,7 +25,7 @@ def invitation_list_members():
                                    .filter_by(list_owner_id=getCurrentUser()
                                               .id).first(),
 
-                                   InvListsMembers=db.query(InvitationListMember) # noqa E501
+                                   InvListMembers=db.query(InvitationListMember) # noqa E501
                                    .filter_by(deleted_at=None)
                                    .filter_by(list_id=inv_list_id).all())
 # TODO - implement alphabet order
@@ -35,6 +35,7 @@ def invitation_list_members():
             return redirectToLogin()
 
     elif request.method == "GET":
+        print('404-1')
         return render_template("404.html", app_name=app_name,
                                user=getCurrentUser())
 
@@ -44,14 +45,18 @@ def invitation_list_members():
                                 methods=["GET", "POST"])
 def invitation_list_member():
     inv_list_id = request.args.get('inv_list_id')
+    print('inv_list_id:')
+    print(inv_list_id)
     action = request.args.get('action')
-    inv_list_member_email = request.args.get('inv_list_member_email')
+    inv_list_member_email = request.form.get('new_inv_list_member_email')
+    print('inv_list_member_email:')
+    print(inv_list_member_email)
     inv_list_member_id = request.args.get('inv_list_member_id')
 
     if request.method == "POST":
         if inv_list_id is not None and inv_list_member_email is not None \
                 and action == "create":  # POST method CREATE
-            if InvitationListMember.list_id.list_owner_id == getCurrentUser():
+            if InvitationListMember.list.list_owner_id == getCurrentUser().id:
 
                 InvitationListMember.create(list_id=inv_list_id,
                                             list_member_email=inv_list_member_email, # noqa E501
@@ -78,9 +83,11 @@ def invitation_list_member():
             return redirectToRoute("invitation_list_handlers.invitation_lists") \
                 if isLoggedIn() else redirectToLogin()  # noqa E501
         else:
+            print('404-2')
             return render_template("404.html", app_name=app_name,
                                    user=getCurrentUser())
 
     if request.method == "GET":
+        print('404-3')
         return render_template("404.html", app_name=app_name,
                                user=getCurrentUser())
