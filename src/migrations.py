@@ -1,9 +1,9 @@
-from src.models.settings import db
-from src.models.user import User
-from src.models.event import Event
-from src.models.event_item import EventItem
-from src.models.event_item_user import EventItemUser
-from src.models.invitation_list import InvitationList
-from src.models.invitation_list_item import InvitationListItem
+from models.settings import db
+from models.user import User
+from models.event import Event
+from models.event_member import EventMember
+from models.event_member_user import EventMemberUser
+from models.invitation_list import InvitationList
+from models.invitation_list_member import InvitationListMember
 
 db.create_all()

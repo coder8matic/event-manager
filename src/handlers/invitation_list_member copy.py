@@ -1,25 +1,35 @@
 from flask import Blueprint, render_template, request
 from models.invitation_list import InvitationList
+from models.invitation_list_member import InvitationListMember
 from models.settings import db
 from utils.app_name import app_name
 from utils.user_helper import (getCurrentUser, isLoggedIn,
                                redirectToLogin, redirectToRoute)
 
-invitation_list_handlers = Blueprint("invitation_list_handlers", __name__)
+inv_list_member_handlers = Blueprint("inv_list_member_handlers", __name__)
 
 
 # list all
-@invitation_list_handlers.route('/invitation_lists', methods=["GET", "POST"])
-def invitation_lists():
+@inv_list_member_handlers.route('/invitation_list_members',
+                                methods=["GET", "POST"])
+def invitation_list_members():
+    inv_list_id = request.args.get('inv_list_id')
     if request.method == "GET":
         if isLoggedIn():
-            return render_template("invitation_lists.html",
+            return render_template("invitation_lists_members.html",
                                    app_name=app_name,
                                    user=getCurrentUser(),
-                                   inv_lists=db.query(InvitationList)
+                                   InvList=db.query(InvitationList)
                                    .filter_by(deleted_at=None)
-                                   .filter_by(list_owner_id=getCurrentUser().id)  # noqa E501
-                                   .order_by(InvitationList.list_name).all())
+                                   .filter_by(id=inv_list_id)
+                                   .filter_by(list_owner_id=getCurrentUser()
+                                              .id).first(),
+
+                                   InvListsMembers=db.query(InvitationListMember) # noqa E501
+                                   .filter_by(deleted_at=None)
+                                   .filter_by(list_id=inv_list_id)
+                                   .order_by(InvitationListMember
+                                             .list_member.email).all())
         else:
             return redirectToLogin()
 
@@ -28,23 +38,29 @@ def invitation_lists():
                                user=getCurrentUser())
 
 
+# TODO: Implement
 # create read update delete
-@invitation_list_handlers.route('/invitation_list', methods=["GET", "POST"])
-def invitation_list():
+@inv_list_member_handlers.route('/invitation_list_member',
+                                methods=["GET", "POST"])
+def invitation_list_member():
     inv_list_id = request.args.get('inv_list_id')
+    inv_list_member_id = request.args.get('inv_list_member_id')
     user = getCurrentUser()
     action = request.args.get('action')
     readInvList = db.query(InvitationList) \
+                    .filter_by(deleted_at=None) \
                     .filter_by(id=inv_list_id) \
                     .filter_by(list_owner_id=user.id).first()
     if request.method == "POST":
-        if inv_list_id is None and action == "create":  # POST method
+        if inv_list_id is not None and inv_list_member_id is None \
+                       and action == "create":  # POST method
+
             list_name = request.form.get('list_name')
             list_owner_id = user.id
 
-            InvitationList.create(list_name=list_name,
-                                  list_owner_id=list_owner_id,
-                                  )
+            InvitationListMember.create(list_name=list_name,
+                                        list_owner_id=list_owner_id,
+                                        )
 
             return redirectToRoute("invitation_list_handlers.invitation_lists") \
                 if isLoggedIn() else redirectToLogin()  # noqa E501

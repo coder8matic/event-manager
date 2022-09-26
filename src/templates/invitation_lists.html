@@ -17,6 +17,8 @@
                         <td>Owner ID</td>
                         <td>Owner Name</td>
                         <td>Last change</td>
+                        <td></td>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -34,7 +36,10 @@
                     <td>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <div class="col-auto mt-2">
-                            <a href="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='update') }}" class="btn btn-outline-primary">Edit</a>
+                            <a href="{{ url_for('inv_list_member_handlers.invitation_list_members', inv_list_id=inv_list.id) }}" class="btn btn-success">Members</a>
+                            </div>
+                            <div class="col-auto mt-2">
+                            <a href="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='update') }}" class="btn btn-outline-primary">Rename</a>
                             </div>
                             <div class="col-auto mt-2">
                                 <form action="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='delete') }}" method="post">

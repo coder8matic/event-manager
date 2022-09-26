@@ -1,0 +1,76 @@
+{% extends "layouts/loggedin.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-body bg-light">
+        <div class="card-title">
+            <div class="row">
+                <div class="col">My List Name: {{ InvList.list_name }}</div>
+                <div class="col d-grid gap-2 d-md-flex justify-content-md-end me-2">
+                    <a class="btn btn-primary" href="{{ url_for('invitation_list_handlers.invitation_list', action='create') }}">old+</a>
+                </div>
+                <div class="col d-grid gap-2 d-md-flex justify-content-md-end me-2">
+                    <!-- Button trigger modal -- ADD MEMBER -->
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNewMemberToListModal">+</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="addNewMemberToListModal" tabindex="-1" aria-labelledby="addNewMemberToListModal" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateCommentModalLabel">Please insert email of a new List Member.</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ url_for('inv_list_member_handlers.invitation_list_member', inv_list_id=InvList.id, inv_list_member_email=new_member_email) }}" method="POST">
+                                <div class="modal-body">
+                                    <input type="email" class="form-control" id="new_member_email" name="new_member_email" value="{{ new_member_email }}" required>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
+                                    <button type="submit" class="btn btn-primary">Add Member</button>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    <!-- End Modal -->
+                </div>
+
+            </div>
+        </div>
+        <div class="card-text">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>member ID</td>
+                        <td>e-mail</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for InvListsMember in InvListsMembers %}
+                <tr>
+                    <td>{{ InvListsMember.user_id }}</td>
+                    <td>{{ InvListsMember.user_email }}</td>
+                    {% if InvListsMember.updated_at is not none %}
+                    <td>{{ InvListsMember.updated_at }}</td>
+                    {% else %}
+                    <td>{{ InvListsMember.created_at }}</td>
+                    {% endif %}
+                    <td>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <div class="col-auto mt-2">
+                            <a href="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='update') }}" class="btn btn-outline-primary">Edit</a>
+                            </div>
+                            <div class="col-auto mt-2">
+                                <form action="{{ url_for('invitation_list_handlers.invitation_list', inv_list_id=inv_list.id, action='delete') }}" method="post">
+                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>            
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
