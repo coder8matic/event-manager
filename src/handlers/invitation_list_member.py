@@ -63,7 +63,10 @@ def invitation_list_member():
             print(inv_list.__dict__)
             # test if current user can add member on list.
             if inv_list.list_owner_id == getCurrentUser().id:
+                print("checkpoint 1")
+                print(inv_list_member_email)
                 isMemberUser = db.query(User).filter_by(email=inv_list_member_email).first()  # noqa E501
+                # print(isMemberUser.__dict__)
                 # Check if email of new list member is already an User
                 if isMemberUser is None:
                     new_user_email = inv_list_member_email
@@ -72,7 +75,8 @@ def invitation_list_member():
                     User.create(email=new_user_email,
                                 password=new_user_password,
                                 )
-
+                    print("checkpoint 2")
+                    print(new_user_email)
                     isMemberUser = db.query(User).filter_by(email=new_user_email).first() # noqa E501
                 print(isMemberUser)
                 list_member_id = isMemberUser.id
