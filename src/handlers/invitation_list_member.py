@@ -1,8 +1,12 @@
+import hashlib
+
 from flask import Blueprint, render_template, request
+from models.settings import db
+from models.user import User
 from models.invitation_list import InvitationList
 from models.invitation_list_member import InvitationListMember
-from models.settings import db
 from utils.app_name import app_name
+from utils.string_helper import random_string
 from utils.user_helper import (getCurrentUser, isLoggedIn,
                                redirectToLogin, redirectToRoute)
 
@@ -11,7 +15,7 @@ inv_list_member_handlers = Blueprint("inv_list_member_handlers", __name__)
 
 # list all
 @inv_list_member_handlers.route('/invitation_list_members',
-                                methods=["GET", "POST"])
+                                methods=["GET"])
 def invitation_list_members():
     inv_list_id = request.args.get('inv_list_id')
     if request.method == "GET":
@@ -25,12 +29,11 @@ def invitation_list_members():
                                    .filter_by(list_owner_id=getCurrentUser()
                                               .id).first(),
 
+                                   # TODO - implement alphabet order
                                    InvListMembers=db.query(InvitationListMember) # noqa E501
                                    .filter_by(deleted_at=None)
                                    .filter_by(list_id=inv_list_id).all())
-# TODO - implement alphabet order
-                              #    .order_by(InvitationListMember)
-                                #  .list_member.email).all())
+
         else:
             return redirectToLogin()
 
@@ -45,24 +48,39 @@ def invitation_list_members():
                                 methods=["GET", "POST"])
 def invitation_list_member():
     inv_list_id = request.args.get('inv_list_id')
-    print('inv_list_id:')
-    print(inv_list_id)
     action = request.args.get('action')
     inv_list_member_email = request.form.get('new_inv_list_member_email')
-    print('inv_list_member_email:')
+    print('inv_list_member_email')
     print(inv_list_member_email)
     inv_list_member_id = request.args.get('inv_list_member_id')
 
     if request.method == "POST":
+        # POST method CREATE - add member to list.
         if inv_list_id is not None and inv_list_member_email is not None \
-                and action == "create":  # POST method CREATE
-            if InvitationListMember.list.list_owner_id == getCurrentUser().id:
+                and action == "create":
+            inv_list = db.query(InvitationList) \
+                .filter_by(id=inv_list_id).first()
+            print(inv_list.__dict__)
+            # test if current user can add member on list.
+            if inv_list.list_owner_id == getCurrentUser().id:
+                isMemberUser = db.query(User).filter_by(email=inv_list_member_email).first()  # noqa E501
+                # Check if email of new list member is already an User
+                if isMemberUser is None:
+                    new_user_email = inv_list_member_email
+                    new_user_password = hashlib.sha256(random_string(20)
+                                                       .encode()).hexdigest()
+                    User.create(email=new_user_email,
+                                password=new_user_password,
+                                )
 
+                    isMemberUser = db.query(User).filter_by(email=new_user_email).first() # noqa E501
+                print(isMemberUser)
+                list_member_id = isMemberUser.id
                 InvitationListMember.create(list_id=inv_list_id,
-                                            list_member_email=inv_list_member_email, # noqa E501
+                                            list_member_id=list_member_id,
                                             )
 
-                return redirectToRoute("invitation_list_handlers.invitation_list_members") \
+                return redirectToRoute("inv_list_member_handlers.invitation_list_members", inv_list_id=inv_list_id) \
                     if isLoggedIn() else redirectToLogin()  # noqa E501
 
             else:

@@ -30,5 +30,5 @@ def getCurrentUser():
     return User
 
 
-def redirectToRoute(route):
-    return make_response(redirect(url_for(route)))
+def redirectToRoute(route, **kwargs):
+    return make_response(redirect(url_for(route), **kwargs))

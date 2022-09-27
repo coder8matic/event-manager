@@ -19,22 +19,14 @@ class User(db.Model):
     @classmethod
     def create(self,
                email,
-               email_verified,
-               email_verified_code,
-               email_verified_code_valid_to,
                password,
-               password_reset_token,
-               password_reset_token_valid_to,
                ):
 
         newUser = self(email=email,
-                       email_verified=email_verified,
-                       email_verified_code=email_verified_code,
-                       email_verified_code_valid_to=email_verified_code_valid_to,  # noqa E501
                        password=password,
-                       password_reset_token=password_reset_token,
-                       password_reset_token_valid_to=password_reset_token_valid_to,  # noqa E501
                        )
+        print("newUser.__dict__")
+        print(newUser.__dict__)
         db.add(newUser)
         db.commit()
         return newUser
@@ -67,9 +59,9 @@ class User(db.Model):
 
     @classmethod
     def delete(self, id):
-        deleteInvList = db.query(User).filter_by(id=id).first()
-        deleteInvList.deleted_at = datetime.utcnow()
+        deleteUser = db.query(User).filter_by(id=id).first()
+        deleteUser.deleted_at = datetime.utcnow()
 
-        db.add(deleteInvList)
+        db.add(deleteUser)
         db.commit()
-        return deleteInvList
+        return deleteUser
