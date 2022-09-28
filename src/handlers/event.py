@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from models.event import Event
+from models.invitation_list import InvitationList
 from models.settings import db
 from utils.app_name import app_name
 from utils.user_helper import (getCurrentUser, isLoggedIn,
@@ -124,20 +125,28 @@ def event():
                                    user=getCurrentUser())
 
     if request.method == "GET":
-        if readEvent is None and action == "create":  # redirect to 404
+        if readEvent is None and action == "create":
             return render_template("event_form.html",
                                    app_name=app_name,
                                    user=user,
                                    event_host_id=user.id,
                                    action=action,
-                                   event=readEvent) \
+                                   event=readEvent,
+                                   inv_lists=db.query(InvitationList)
+                                   .filter_by(deleted_at=None)
+                                   .filter_by(list_owner_id=getCurrentUser().id)  # noqa E501
+                                   .order_by(InvitationList.list_name).all()) \
                 if isLoggedIn() else redirectToLogin()
 
         elif readEvent is not None and action == "update":
             return render_template("event_form.html", app_name=app_name,
                                    action=action,
                                    user=getCurrentUser(),
-                                   event=readEvent) \
+                                   event=readEvent,
+                                   inv_lists=db.query(InvitationList)
+                                   .filter_by(deleted_at=None)
+                                   .filter_by(list_owner_id=getCurrentUser().id)  # noqa E501
+                                   .order_by(InvitationList.list_name).all()) \
                 if isLoggedIn() else redirectToLogin()
 
         elif readEvent is None:  # redirect to 404

@@ -1,8 +1,5 @@
 from flask import Flask
-# load environmental variables from .env file
-from dotenv import load_dotenv
-# Environment variables need to be imported before modules import
-load_dotenv()
+
 
 from handlers.auth import authentication_handlers  # noqa E402
 from handlers.event import event_handlers  # noqa E402

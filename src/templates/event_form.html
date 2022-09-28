@@ -22,8 +22,22 @@
                     <textarea rows="8" class="form-control" id="event_invitation_text" name="event_invitation_text" required>{{ event.event_invitation_text }}</textarea>
                 </div>
                 <div class="col-auto">
-                    <label for="invitation_list_id" class="form-label">Invitation List ID</label>
-                    <input type="text" class="form-control" id="invitation_list_id" name="invitation_list_id" value="{{ event.invitation_list_id }}" required>
+                    <label for="invitation_list_id" class="form-label">Invitation List</label>
+                    <!-- <input type="text" class="form-control" id="invitation_list_id" name="invitation_list_id" value="{{ event.invitation_list_id }}"> -->
+                    <select class="form-select" aria-label="Default select example" id="invitation_list_id" name="invitation_list_id">
+                        {% if event.invitation_list_id is none %}
+                        <option selected>Open this select menu</option>
+                        {% else %}
+
+                        {% endif %}
+                        {% for inv_list in inv_lists %}
+                        {% if event.invitation_list_id == inv_list.id %}
+                        <option selected value="{{ inv_list.id }}">{{ inv_list.list_name }}</option>
+                        {% else %}
+                        <option value="{{ inv_list.id }}">{{ inv_list.list_name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col-auto">
                     <label for="event_start_date" class="form-label">Start date</label>

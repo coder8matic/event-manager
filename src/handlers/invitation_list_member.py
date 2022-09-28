@@ -1,5 +1,4 @@
 import hashlib
-
 from flask import Blueprint, render_template, request
 from models.settings import db
 from models.user import User
@@ -53,6 +52,8 @@ def invitation_list_member():
     print('inv_list_member_email')
     print(inv_list_member_email)
     inv_list_member_id = request.args.get('inv_list_member_id')
+    print('inv_list_member_id')
+    print(inv_list_member_id)
 
     if request.method == "POST":
         # POST method CREATE - add member to list.
@@ -70,8 +71,10 @@ def invitation_list_member():
                 # Check if email of new list member is already an User
                 if isMemberUser is None:
                     new_user_email = inv_list_member_email
+                    print(new_user_email)
                     new_user_password = hashlib.sha256(random_string(20)
                                                        .encode()).hexdigest()
+                    print(new_user_password)
                     User.create(email=new_user_email,
                                 password=new_user_password,
                                 )

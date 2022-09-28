@@ -25,10 +25,10 @@ class User(db.Model):
         newUser = self(email=email,
                        password=password,
                        )
-        print("newUser.__dict__")
-        print(newUser.__dict__)
+
         db.add(newUser)
         db.commit()
+        
         return newUser
 
     @classmethod
